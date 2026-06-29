@@ -1,8 +1,6 @@
 version: '3.8'
 
 services:
-
-  # Service 1 : Base de données MySQL
   db:
     image: mysql:8.0
     container_name: pfe-mysql
@@ -24,7 +22,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # Service 2 : WordPress
   wordpress:
     image: wordpress:latest
     container_name: pfe-wordpress
@@ -42,7 +39,6 @@ services:
     networks:
       - pfe-network
 
-  # Service 3 : Nginx (reverse proxy)
   nginx:
     image: nginx:alpine
     container_name: pfe-nginx

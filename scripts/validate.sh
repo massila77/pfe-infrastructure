@@ -5,7 +5,6 @@ echo "============================================"
 
 ERRORS=0
 
-# Vérifier chaque conteneur
 for service in pfe-mysql pfe-wordpress pfe-nginx; do
     STATUS=$(docker inspect -f '{{.State.Running}}' $service 2>/dev/null)
     if [ "$STATUS" = "true" ]; then
@@ -16,7 +15,6 @@ for service in pfe-mysql pfe-wordpress pfe-nginx; do
     fi
 done
 
-# Vérifier que le site répond
 HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
 if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ]; then
     echo "OK : Le site répond (HTTP $HTTP_CODE)"
@@ -25,7 +23,6 @@ else
     ERRORS=$((ERRORS+1))
 fi
 
-echo ""
 if [ $ERRORS -eq 0 ]; then
     echo "Tous les services sont opérationnels !"
 else

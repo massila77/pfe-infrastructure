@@ -1,13 +1,6 @@
-# Fichier de secrets - ne jamais publier
 .env
-
-# Dossiers système
 .DS_Store
 Thumbs.db
-
-# Logs
 *.log
 logs/
-
-# Docker volumes
 data/
