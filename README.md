@@ -21,6 +21,7 @@ Internet
 │
 ▼
 [MySQL]
+
 ## Prérequis
 
 - Git
@@ -48,6 +49,7 @@ MYSQL_DATABASE=appdb
 MYSQL_USER=appuser
 MYSQL_PASSWORD=VotreMotDePasse
 WORDPRESS_DB_PASSWORD=VotreMotDePasse
+
 ### 3. Lancer le déploiement
 
 ```bash
@@ -55,11 +57,7 @@ cd docker
 docker compose --env-file ../.env up -d
 ```
 
-### 4. Vérifier le déploiement
-
-```bash
-docker compose ps
-```
+### 4. Accéder au site
 
 Le site est accessible sur : **http://localhost:8080**
 
@@ -71,14 +69,14 @@ bash scripts/validate.sh
 
 ## Procédure de nettoyage
 
-Pour arrêter et supprimer tous les conteneurs :
+Arrêter les conteneurs :
 
 ```bash
 cd docker
 docker compose down
 ```
 
-Pour tout supprimer y compris les données :
+Tout supprimer y compris les données :
 
 ```bash
 docker compose down -v
@@ -89,8 +87,9 @@ docker compose down -v
 - Les secrets sont stockés dans un fichier `.env` non versionné
 - Le fichier `.env` est listé dans `.gitignore`
 - Un fichier `.env.example` documente les variables sans exposer les valeurs
-- Les services communiquent sur un réseau Docker isolé
-- Seul le port 8080 est exposé à l'extérieur
+- Les services communiquent sur un réseau Docker isolé `pfe-network`
+- Seul le port 8080 est exposé vers l'extérieur
+- Principe du moindre privilège : un utilisateur MySQL dédié pour WordPress
 
 ## Structure du projet
 pfe-infrastructure/
@@ -102,9 +101,12 @@ pfe-infrastructure/
 │   ├── deploy.sh
 │   └── validate.sh
 ├── docs/
+│   ├── architecture.md
+│   └── note-securite.md
 ├── .env.example
 ├── .gitignore
 └── README.md
+
 ## Auteur
 
 Massila — ECE Paris — B3 AIS — 2026
