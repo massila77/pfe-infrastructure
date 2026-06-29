@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+
+  # Service 1 : Base de données MySQL
+  db:
+    image: mysql:8.0
+    container_name: pfe-mysql
+    restart: always
+    env_file:
+      - ../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - pfe-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service 2 : WordPress
+  wordpress:
+    image: wordpress:latest
+    container_name: pfe-wordpress
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ../.env
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    networks:
+      - pfe-network
+
+  # Service 3 : Nginx (reverse proxy)
+  nginx:
+    image: nginx:alpine
+    container_name: pfe-nginx
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ../config/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - wordpress
+    networks:
+      - pfe-network
+
+networks:
+  pfe-network:
+    driver: bridge
+
+volumes:
+  db_data:
