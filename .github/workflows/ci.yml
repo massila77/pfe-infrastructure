@@ -15,7 +15,11 @@ jobs:
 
     steps:
       - name: Récupération du code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Création du fichier .env de test
+        run: |
+          cp .env.example .env
 
       - name: Vérification de la syntaxe docker-compose
         run: |
@@ -35,7 +39,7 @@ jobs:
       - name: Vérification qu'aucun secret n'est exposé
         run: |
           echo "Vérification des secrets..."
-          if [ -f .env ]; then
+          if git show HEAD:.env > /dev/null 2>&1; then
             echo "ERREUR : fichier .env présent dans le dépôt !"
             exit 1
           else
