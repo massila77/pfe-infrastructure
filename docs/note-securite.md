@@ -39,11 +39,15 @@
 - Pas de système de sauvegarde automatique de la base de données
 - Pas de limitation du nombre de tentatives de connexion
 - Environnement de développement uniquement, pas production-ready
+- L'isolation réseau repose sur un réseau Docker unique (`pfe-network`) : MySQL et WordPress partagent le même réseau interne. Une segmentation en deux réseaux séparés (un réseau `frontend` entre Nginx et WordPress, un réseau `backend` avec `internal: true` entre WordPress et MySQL) renforcerait le principe de moindre privilège réseau — MySQL ne serait alors joignable que par WordPress, et non par Nginx.
+- Absence de pare-feu applicatif dédié (WAF) ou de règles de filtrage réseau au-delà de l'isolation Docker
 
 ## 4. Pistes d'amélioration
 
+- **Segmentation réseau** : séparer le réseau en deux couches isolées (`frontend-network` entre Nginx et WordPress, `backend-network` avec `internal: true` entre WordPress et MySQL) pour renforcer l'isolation et limiter la surface d'attaque
 - Ajouter un certificat SSL/TLS avec Let's Encrypt
 - Mettre en place des sauvegardes automatiques MySQL
 - Utiliser Docker Secrets pour la gestion des secrets en production
 - Ajouter un WAF (Web Application Firewall)
 - Mettre en place une supervision avec Prometheus/Grafana
+- Rendre le projet compatible GNU Make sur Windows en ajoutant un script `.bat` ou `.ps1` équivalent au Makefile
