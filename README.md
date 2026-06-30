@@ -14,16 +14,6 @@ L'infrastructure déploie automatiquement trois services :
 
 ## Architecture
 ![Architecture](docs/architecture.png)
-Internet
-│
-▼
-[Nginx :8080]  ← reverse proxy
-│
-▼
-[WordPress]    ← application web
-│
-▼
-[MySQL]        ← base de données
 
 ## Prérequis
 
