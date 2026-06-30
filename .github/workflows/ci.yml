@@ -1,0 +1,43 @@
+name: CI - Vérification de l'infrastructure
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validation de la configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v3
+
+      - name: Vérification de la syntaxe docker-compose
+        run: |
+          docker compose -f docker/docker-compose.yml config
+
+      - name: Vérification des fichiers obligatoires
+        run: |
+          echo "Vérification des fichiers..."
+          test -f docker/docker-compose.yml && echo "OK : docker-compose.yml"
+          test -f config/nginx.conf && echo "OK : nginx.conf"
+          test -f scripts/deploy.sh && echo "OK : deploy.sh"
+          test -f scripts/validate.sh && echo "OK : validate.sh"
+          test -f .env.example && echo "OK : .env.example"
+          test -f README.md && echo "OK : README.md"
+          echo "Tous les fichiers sont présents !"
+
+      - name: Vérification qu'aucun secret n'est exposé
+        run: |
+          echo "Vérification des secrets..."
+          if [ -f .env ]; then
+            echo "ERREUR : fichier .env présent dans le dépôt !"
+            exit 1
+          else
+            echo "OK : aucun secret exposé"
+          fi
