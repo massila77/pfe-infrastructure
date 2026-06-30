@@ -1,5 +1,7 @@
 # PFE Infrastructure — Déploiement automatisé avec Docker Compose
 
+![CI](https://github.com/massila77/pfe-infrastructure/actions/workflows/ci.yml/badge.svg)
+
 ## Présentation du projet
 
 Ce projet met en place une infrastructure web automatisée et reproductible pour une PME.
@@ -14,13 +16,13 @@ L'infrastructure déploie automatiquement trois services :
 Internet
 │
 ▼
-[Nginx :8080]
+[Nginx :8080]  ← reverse proxy
 │
 ▼
-[WordPress]
+[WordPress]    ← application web
 │
 ▼
-[MySQL]
+[MySQL]        ← base de données
 
 ## Prérequis
 
@@ -52,6 +54,12 @@ WORDPRESS_DB_PASSWORD=VotreMotDePasse
 
 ### 3. Lancer le déploiement
 
+Avec le Makefile :
+```bash
+make deploy
+```
+
+Ou manuellement :
 ```bash
 cd docker
 docker compose --env-file ../.env up -d
@@ -61,26 +69,35 @@ docker compose --env-file ../.env up -d
 
 Le site est accessible sur : **http://localhost:8080**
 
+## Commandes disponibles
+
+| Commande | Description |
+|----------|-------------|
+| `make deploy` | Lancer l'infrastructure |
+| `make stop` | Arrêter l'infrastructure |
+| `make restart` | Redémarrer l'infrastructure |
+| `make validate` | Vérifier que tout fonctionne |
+| `make logs` | Afficher les logs |
+| `make clean` | Supprimer tous les conteneurs |
+
 ## Procédure de validation
 
 ```bash
-bash scripts/validate.sh
+make validate
 ```
 
 ## Procédure de nettoyage
 
-Arrêter les conteneurs :
-
 ```bash
-cd docker
-docker compose down
+make clean
 ```
 
-Tout supprimer y compris les données :
+## CI/CD
 
-```bash
-docker compose down -v
-```
+Ce projet utilise **GitHub Actions** pour vérifier automatiquement à chaque push :
+- La syntaxe du fichier docker-compose.yml
+- La présence de tous les fichiers obligatoires
+- Qu'aucun secret n'est exposé dans le dépôt
 
 ## Sécurité
 
@@ -90,22 +107,27 @@ docker compose down -v
 - Les services communiquent sur un réseau Docker isolé `pfe-network`
 - Seul le port 8080 est exposé vers l'extérieur
 - Principe du moindre privilège : un utilisateur MySQL dédié pour WordPress
+- Healthcheck automatique sur MySQL
 
 ## Structure du projet
 pfe-infrastructure/
+├── .github/
+│   └── workflows/
+│       └── ci.yml          ← pipeline CI/CD
 ├── docker/
-│   └── docker-compose.yml
+│   └── docker-compose.yml  ← configuration des services
 ├── config/
-│   └── nginx.conf
+│   └── nginx.conf          ← configuration Nginx
 ├── scripts/
-│   ├── deploy.sh
-│   └── validate.sh
+│   ├── deploy.sh           ← script de déploiement
+│   └── validate.sh         ← script de validation
 ├── docs/
-│   ├── architecture.md
-│   └── note-securite.md
-├── .env.example
-├── .gitignore
-└── README.md
+│   ├── architecture.md     ← schéma d'architecture
+│   └── note-securite.md    ← note de sécurité
+├── Makefile                ← raccourcis de commandes
+├── .env.example            ← modèle des secrets
+├── .gitignore              ← fichiers exclus de Git
+└── README.md               ← documentation
 
 ## Auteur
 
