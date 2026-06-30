@@ -14,6 +14,7 @@ L'infrastructure déploie automatiquement trois services :
 
 ## Architecture
 ![Architecture](docs/architecture.png)
+L'infrastructure est organisée en 3 couches : Nginx en reverse proxy reçoit les requêtes sur le port 8080, les transmet à WordPress qui interroge MySQL en interne. Les 3 services communiquent sur un réseau Docker isolé (pfe-network), seul le port 8080 est exposé vers l'extérieur.
 
 ## Prérequis
 
