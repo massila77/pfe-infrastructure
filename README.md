@@ -12,8 +12,8 @@ L'infrastructure déploie automatiquement trois services :
 - **WordPress** : application web (CMS)
 - **MySQL** : base de données
 
-![Architecture](docs/architecture.png)
 ## Architecture
+![Architecture](docs/architecture.png)
 Internet
 │
 ▼
