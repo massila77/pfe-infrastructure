@@ -1,4 +1,4 @@
-.PHONY: deploy stop restart validate logs clean help
+.PHONY: deploy stop restart validate logs backup clean help
 
 help:
 	@echo "Commandes disponibles :"
@@ -7,6 +7,7 @@ help:
 	@echo "  make restart   - Redémarrer l'infrastructure"
 	@echo "  make validate  - Vérifier que tout fonctionne"
 	@echo "  make logs      - Afficher les logs"
+	@echo "  make backup    - Sauvegarder la base de données"
 	@echo "  make clean     - Supprimer tous les conteneurs et volumes"
 
 deploy:
@@ -31,7 +32,11 @@ validate:
 
 logs:
 	@echo "Affichage des logs..."
-	cd docker && docker compose logs --tail=50
+	bash scripts/logs.sh
+
+backup:
+	@echo "Sauvegarde en cours..."
+	bash scripts/backup.sh
 
 clean:
 	@echo "Suppression de tout..."
